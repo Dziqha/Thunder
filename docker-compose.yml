@@ -1,0 +1,16 @@
+# ====================
+# docker-compose.yml (optional)
+# ====================
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/tmp
+    command: go run thunder.go
+    environment:
+      - APP_ENV=development

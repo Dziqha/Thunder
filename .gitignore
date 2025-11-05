@@ -1,0 +1,32 @@
+# ====================
+# .gitignore
+# ====================
+# Thunder build output
+tmp/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output binary
+thunder
+main
+
+# Go workspace
+vendor/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
