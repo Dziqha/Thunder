@@ -15,6 +15,8 @@ tmp/
 # Output binary
 thunder
 main
++ /thunder
++ /main
 
 # Go workspace
 vendor/
