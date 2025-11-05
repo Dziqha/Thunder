@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Dziqha/thunder/internal/commands"
+	"github.com/Dziqha/Thunder/internal/commands"
 )
 
 const (

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Dziqha/thunder/internal/config"
-	"github.com/Dziqha/thunder/internal/watcher"
+	"github.com/Dziqha/Thunder/internal/config"
+	"github.com/Dziqha/Thunder/internal/watcher"
 )
 
 func Run() error {

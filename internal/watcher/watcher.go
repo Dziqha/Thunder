@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/Dziqha/thunder/internal/config"
+	"github.com/Dziqha/Thunder/internal/config"
 )
 
 const (

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Dziqha/thunder/internal/cli"
+	"github.com/Dziqha/Thunder/internal/cli"
 )
 
 const version = "1.0.0"
