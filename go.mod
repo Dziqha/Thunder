@@ -1,4 +1,4 @@
-module github.com/Dziqha/thunder
+module github.com/Dziqha/Thunder
 
 go 1.24.1
 
