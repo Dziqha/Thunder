@@ -54,7 +54,7 @@ func showHelp() {
 ╚════════════════════════════════════╝%s
 
 Usage:
-  thunder <command> [arguments]
+  Thunder <command> [arguments]
 
 Commands:
   init        Initialize Thunder in current directory
@@ -63,14 +63,14 @@ Commands:
   help        Show this help message
 
 Examples:
-  thunder init              # Initialize Thunder
-  thunder run               # Run with hot reload (uses main.go)
-  thunder run cmd/api       # Run specific package
+  Thunder init              # Initialize Thunder
+  Thunder run               # Run with hot reload (uses main.go)
+  Thunder run cmd/api       # Run specific package
 
 Installation:
-  go install github.com/yourusername/thunder/cmd/thunder@latest
+  go install github.com/Dziqha/thunder/cmd/thunder@latest
 
-Learn more: https://github.com/yourusername/thunder
+Learn more: https://github.com/Dziqha/thunder
 `, colorBlue, colorReset)
 
 	fmt.Println(banner)
