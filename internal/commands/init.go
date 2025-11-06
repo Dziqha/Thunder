@@ -1,4 +1,3 @@
-// internal/commands/init.go
 package commands
 
 import (
@@ -30,7 +29,7 @@ func Init() error {
 		fmt.Printf("%s⚠ No main.go found automatically, using default: %s%s\n", colorYellow, mainPath, colorReset)
 	} else {
 		rel, _ := filepath.Rel(".", mainPath)
-		mainPath = rel
+		mainPath = filepath.ToSlash(rel)
 		fmt.Printf("%s✓ Detected entry point: %s%s\n", colorGreen, mainPath, colorReset)
 	}
 

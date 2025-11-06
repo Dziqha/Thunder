@@ -1,4 +1,3 @@
-// internal/config/config.go
 package config
 
 import (
@@ -35,7 +34,6 @@ func Default() *Config {
 func Load() (*Config, error) {
 	cfg := Default()
 
-	// Try to read thunder.toml
 	data, err := os.ReadFile("thunder.toml")
 	if err != nil {
 		return nil, err
@@ -45,10 +43,8 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
-	// Convert milliseconds to duration
 	cfg.DebounceD = time.Duration(cfg.Debounce) * time.Millisecond
 
-	// Ensure at least one watch directory
 	if len(cfg.WatchDirs) == 0 {
 		cfg.WatchDirs = []string{"."}
 	}

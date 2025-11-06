@@ -1,4 +1,3 @@
-// internal/commands/run.go
 package commands
 
 import (
@@ -10,10 +9,8 @@ import (
 )
 
 func Run() error {
-	// Load config
 	cfg, err := config.Load()
 	if err != nil {
-		// If no config found, use defaults
 		if os.IsNotExist(err) {
 			fmt.Printf("%s⚠ No thunder.toml found, using default configuration%s\n", colorYellow, colorReset)
 			fmt.Printf("%s💡 Run 'thunder init' to create a configuration file%s\n\n", colorYellow, colorReset)
@@ -23,12 +20,10 @@ func Run() error {
 		}
 	}
 
-	// Override main file if specified in args
 	if len(os.Args) > 2 {
 		cfg.MainFile = os.Args[2]
 	}
 
-	// Create and start watcher
 	w, err := watcher.New(cfg)
 	if err != nil {
 		return fmt.Errorf("failed to create watcher: %v", err)

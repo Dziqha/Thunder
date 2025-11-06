@@ -1,4 +1,3 @@
-// cmd/thunder/main.go
 package main
 
 import (
@@ -7,8 +6,6 @@ import (
 
 	"github.com/Dziqha/Thunder/internal/cli"
 )
-
-const version = "1.0.0"
 
 func main() {
 	if err := cli.Execute(); err != nil {

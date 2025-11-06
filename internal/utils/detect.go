@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-// DetectMainFile mencari file main.go yang valid (berisi package main dan func main)
 func DetectMainFile(root string) (string, error) {
 	var mainFiles []string
 
@@ -17,7 +16,6 @@ func DetectMainFile(root string) (string, error) {
 		}
 
 		if info.IsDir() {
-			// skip direktori yang umum di-skip
 			if info.Name() == "vendor" || info.Name() == "tmp" || info.Name() == ".git" || info.Name() == "node_modules" {
 				return filepath.SkipDir
 			}
@@ -60,6 +58,5 @@ func DetectMainFile(root string) (string, error) {
 		return "", os.ErrNotExist
 	}
 
-	// kalau lebih dari satu, ambil yang pertama
 	return mainFiles[0], nil
 }

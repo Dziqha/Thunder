@@ -1,4 +1,3 @@
-// internal/watcher/watcher.go
 package watcher
 
 import (
@@ -48,27 +47,22 @@ func New(cfg *config.Config) (*Watcher, error) {
 }
 
 func (w *Watcher) Start() error {
-	// Create tmp directory
 	if err := os.MkdirAll(filepath.Dir(w.config.BuildPath), 0755); err != nil {
 		return err
 	}
 
-	// Add directories to watcher
 	for _, dir := range w.config.WatchDirs {
 		if err := w.addRecursive(dir); err != nil {
 			log.Printf("%s⚠ Warning: Could not watch directory %s: %v%s\n", colorYellow, dir, err, colorReset)
 		}
 	}
 
-	// Initial build and run
 	if err := w.rebuild(); err != nil {
 		log.Printf("%s✗ Initial build failed: %v%s\n", colorRed, err, colorReset)
 	}
 
-	// Watch for changes
 	go w.watch()
 
-	// Keep running
 	select {}
 }
 
@@ -78,7 +72,6 @@ func (w *Watcher) addRecursive(root string) error {
 			return err
 		}
 
-		// Skip excluded directories
 		if info.IsDir() {
 			for _, exclude := range w.config.ExcludeDirs {
 				if info.Name() == exclude {
@@ -99,12 +92,10 @@ func (w *Watcher) watch() {
 				return
 			}
 
-			// Only watch .go files
 			if !strings.HasSuffix(event.Name, ".go") {
 				continue
 			}
 
-			// Ignore certain operations
 			if event.Op&fsnotify.Chmod == fsnotify.Chmod {
 				continue
 			}
@@ -140,10 +131,8 @@ func (w *Watcher) rebuild() error {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 
-	// Stop current process
 	w.stop()
 
-	// Build
 	start := time.Now()
 	log.Printf("%s⚙ Building...%s\n", colorCyan, colorReset)
 
@@ -161,7 +150,6 @@ func (w *Watcher) rebuild() error {
 	buildTime := time.Since(start)
 	log.Printf("%s✓ Build completed in %dms%s\n", colorGreen, buildTime.Milliseconds(), colorReset)
 
-	// Run
 	return w.run()
 }
 
@@ -181,10 +169,8 @@ func (w *Watcher) run() error {
 		return err
 	}
 
-	// Wait in goroutine
 	go func() {
 		if err := w.cmd.Wait(); err != nil {
-			// Only log if not killed by us
 			if ctx.Err() == nil {
 				log.Printf("%s✗ Application exited with error: %v%s\n", colorRed, err, colorReset)
 			}
@@ -201,7 +187,6 @@ func (w *Watcher) stop() {
 	}
 
 	if w.cmd != nil && w.cmd.Process != nil {
-		// Give it a moment to cleanup
 		time.Sleep(50 * time.Millisecond)
 		w.cmd = nil
 	}

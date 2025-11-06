@@ -1,9 +1,10 @@
-// internal/cli/cli.go
 package cli
 
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/Dziqha/Thunder/internal/commands"
 )
@@ -40,8 +41,19 @@ func Execute() error {
 	}
 }
 
+
+func getGitTag() string {
+	cmd := exec.Command("git", "describe", "--tags", "--abbrev=0")
+	out, err := cmd.Output()
+	if err != nil {
+		return "v1.0.0"
+	}
+	return strings.TrimSpace(string(out))
+}
+
 func showVersion() {
-	fmt.Printf("%s⚡ Thunder v1.0.0%s\n", colorBlue, colorReset)
+	version := getGitTag()
+	fmt.Printf("%s⚡ Thunder %s%s\n",colorBlue, version, colorReset)
 	fmt.Println("Ultra-fast hot reload for Go")
 }
 

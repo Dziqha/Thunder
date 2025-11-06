@@ -16,47 +16,21 @@ Hot reload tool untuk Go yang **lebih cepat** dari Air!
 ## 📦 Installation
 
 ```bash
-# Clone atau copy thunder.go ke project Anda
-# Install dependency
-go get github.com/fsnotify/fsnotify
+ go install github.com/Dziqha/Thunder/cmd/thunder@latest
 ```
 
 ## 🎯 Usage
 
-### Cara 1: Run langsung
+### Cara 1: Run Project
 ```bash
-# Jalankan thunder untuk main.go
-go run thunder.go
-
-# Atau untuk file lain
-go run thunder.go cmd/api/main.go
+# Jalankan thunder untuk file.go
+Thunder run
 ```
 
-### Cara 2: Build thunder sebagai binary
+### Cara 2: Init Project
 ```bash
 # Build thunder
-go build -o thunder thunder.go
-
-# Jalankan
-./thunder
-# atau
-./thunder cmd/api/main.go
-```
-
-## ⚙️ Konfigurasi
-
-Edit fungsi `DefaultConfig()` di thunder.go:
-
-```go
-Config{
-    BuildPath:   "./tmp/main",           // Output binary
-    MainFile:    "main.go",              // Entry point
-    WatchDirs:   []string{"."},          // Direktori yang diwatch
-    ExcludeDirs: []string{"tmp", "vendor"}, // Direktori yang diignore
-    BuildArgs:   []string{"-tags", "dev"}, // Extra build args
-    RunArgs:     []string{},             // Args untuk app
-    Debounce:    100 * time.Millisecond, // Debounce time
-}
+Thunder init
 ```
 
 ## 🎨 Output Features
@@ -67,27 +41,6 @@ Config{
 - ✗ **Error messages** yang informatif
 - 🎯 **File change detection** yang akurat
 
-## 🔥 Performance Tips
-
-1. **Exclude unnecessary directories** - Tambahkan folder besar ke excludeDirs
-2. **Adjust debounce** - Turunkan ke 50ms jika edit lambat, naikkan ke 200ms jika terlalu sensitive
-3. **Use build tags** - Pisahkan dev dan production code dengan build tags
-
-## 📝 Example Project Structure
-
-```
-myapp/
-├── thunder.go          # Hot reload tool
-├── main.go            # Your app
-├── go.mod
-├── handlers/
-│   └── api.go
-├── models/
-│   └── user.go
-└── tmp/               # Build output (auto-created)
-    └── main
-```
-
 ## 🎯 Tips
 
 - Edit file .go apapun dan Thunder akan auto-reload
@@ -95,46 +48,6 @@ myapp/
 - Ctrl+C untuk stop Thunder
 - Error build akan ditampilkan tanpa crash
 
-## 🆚 Comparison
-
-### Air:
-- Butuh config file `.air.toml`
-- Reload lebih lambat (1s debounce default)
-- Setup lebih kompleks
-
-### Thunder:
-- Zero config, works out of the box
-- Ultra fast reload (100ms debounce)
-- Colored, beautiful output
-- Lebih lightweight
-
-## 💡 Advanced Usage
-
-### Custom Config
-```go
-config := Config{
-    BuildPath:   "./bin/app",
-    MainFile:    "cmd/api/main.go",
-    WatchDirs:   []string{".", "pkg"},
-    ExcludeDirs: []string{"tmp", "vendor", "node_modules"},
-    BuildArgs:   []string{"-tags", "dev", "-race"},
-    RunArgs:     []string{"-port", "3000"},
-    Debounce:    50 * time.Millisecond,
-}
-```
-
-### Multi-directory Watch
-```go
-WatchDirs: []string{".", "internal", "pkg", "cmd"}
-```
-
-### Production Build Flags
-```go
-BuildArgs: []string{
-    "-ldflags", "-s -w",  // Reduce binary size
-    "-tags", "production",
-}
-```
 
 ## 🐛 Troubleshooting
 
