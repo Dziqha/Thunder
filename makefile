@@ -1,85 +1,51 @@
-# ====================
-# Makefile
-# ====================
-.PHONY: dev build install clean test run help
+.PHONY: build install run dev test race fmt clean bench release-check help
 
-# Build thunder binary
+BINARY=thunder
+CMD=./cmd/thunder
+
 build:
-	@echo "🔨 Building Thunder..."
-	@go build -o thunder thunder.go
-	@echo "✅ Thunder built successfully!"
+	@echo "Building Thunder..."
+	@go build -o $(BINARY) $(CMD)
 
-# Install thunder to GOPATH
 install:
-	@echo "📦 Installing Thunder..."
-	@go install thunder.go
-	@echo "✅ Thunder installed! Use 'thunder' command anywhere"
+	@echo "Installing Thunder..."
+	@go install $(CMD)
 
-# Run with hot reload (development mode)
-dev:
-	@echo "⚡ Starting Thunder hot reload..."
-	@go run thunder.go
-
-# Run specific file
 run:
-	@go run thunder.go $(FILE)
+	@go run $(CMD) run
 
-# Build your app
-build-app:
-	@echo "🔨 Building application..."
-	@go build -o bin/app main.go
-	@echo "✅ Application built to bin/app"
+dev:
+	@go run $(CMD) dev
 
-# Clean build artifacts
-clean:
-	@echo "🧹 Cleaning..."
-	@rm -rf tmp/
-	@rm -f thunder
-	@rm -f main
-	@rm -rf bin/
-	@echo "✅ Cleaned!"
-
-# Run tests
 test:
-	@echo "🧪 Running tests..."
 	@go test ./...
 
-# Format code
+race:
+	@go test -race ./...
+
 fmt:
-	@echo "💅 Formatting code..."
 	@go fmt ./...
-	@echo "✅ Code formatted!"
 
-# Download dependencies
-deps:
-	@echo "📦 Downloading dependencies..."
-	@go mod download
-	@go mod tidy
-	@echo "✅ Dependencies ready!"
+bench:
+	@pwsh ./scripts/bench.ps1 -Iterations 20 -Target $(CMD)
 
-# Initialize new project
-init:
-	@echo "🎯 Initializing Thunder project..."
-	@go mod init myapp
-	@go get github.com/fsnotify/fsnotify
-	@echo "✅ Project initialized!"
+release-check:
+	@go run $(CMD) release-check
 
-# Show help
+clean:
+	@echo "Cleaning artifacts..."
+	@rm -rf tmp/
+	@rm -f $(BINARY)
+
 help:
-	@echo "⚡ Thunder - Ultra Fast Hot Reload"
-	@echo ""
-	@echo "Available commands:"
-	@echo "  make dev        - Start hot reload (default: main.go)"
-	@echo "  make run FILE=  - Run specific file (e.g., make run FILE=cmd/api/main.go)"
-	@echo "  make build      - Build thunder binary"
-	@echo "  make install    - Install thunder globally"
-	@echo "  make build-app  - Build your application"
-	@echo "  make clean      - Clean build artifacts"
-	@echo "  make test       - Run tests"
-	@echo "  make fmt        - Format code"
-	@echo "  make deps       - Download dependencies"
-	@echo "  make init       - Initialize new project"
-	@echo ""
-	@echo "Quick start:"
-	@echo "  1. make init    # First time setup"
-	@echo "  2. make dev     # Start developing"
+	@echo "Thunder Make targets"
+	@echo "  make build         Build thunder binary"
+	@echo "  make install       Install thunder to GOPATH/bin"
+	@echo "  make run           Run single-app hot reload mode"
+	@echo "  make dev           Run orchestration mode"
+	@echo "  make test          Run tests"
+	@echo "  make race          Run race tests"
+	@echo "  make fmt           Format source"
+	@echo "  make bench         Run benchmark harness"
+	@echo "  make release-check Run release readiness checks"
+	@echo "  make clean         Remove local artifacts"

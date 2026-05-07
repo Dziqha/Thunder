@@ -6,9 +6,12 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -30,8 +33,10 @@ type Watcher struct {
 	cmd           *exec.Cmd
 	mutex         sync.Mutex
 	debounceTimer *time.Timer
+	lastEvent     string
 	config        *config.Config
 	cancelFunc    context.CancelFunc
+	rootCtx       context.Context
 }
 
 func New(cfg *config.Config) (*Watcher, error) {
@@ -43,10 +48,15 @@ func New(cfg *config.Config) (*Watcher, error) {
 	return &Watcher{
 		watcher: watcher,
 		config:  cfg,
+		rootCtx: context.Background(),
 	}, nil
 }
 
 func (w *Watcher) Start() error {
+	if err := w.config.NormalizeAndValidate(); err != nil {
+		return err
+	}
+
 	if err := os.MkdirAll(filepath.Dir(w.config.BuildPath), 0755); err != nil {
 		return err
 	}
@@ -63,7 +73,13 @@ func (w *Watcher) Start() error {
 
 	go w.watch()
 
-	select {}
+	sigCtx, stop := signal.NotifyContext(w.rootCtx, os.Interrupt, syscall.SIGTERM)
+	defer stop()
+	<-sigCtx.Done()
+
+	log.Printf("%s⏹ Shutting down Thunder...%s\n", colorBlue, colorReset)
+	w.Close()
+	return nil
 }
 
 func (w *Watcher) addRecursive(root string) error {
@@ -78,10 +94,51 @@ func (w *Watcher) addRecursive(root string) error {
 					return filepath.SkipDir
 				}
 			}
-			return w.watcher.Add(path)
+			if err := w.watcher.Add(path); err != nil {
+				return err
+			}
+			return nil
 		}
+
 		return nil
 	})
+}
+
+func (w *Watcher) shouldWatchFile(name string) bool {
+	base := filepath.Base(name)
+	for _, f := range w.config.WatchFiles {
+		if base == filepath.Base(f) {
+			return true
+		}
+	}
+
+	ext := strings.ToLower(filepath.Ext(base))
+	for _, allowed := range w.config.WatchExts {
+		if ext == allowed {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (w *Watcher) isExcludedDir(path string) bool {
+	name := filepath.Base(path)
+	for _, exclude := range w.config.ExcludeDirs {
+		if name == exclude {
+			return true
+		}
+	}
+	return false
+}
+
+func (w *Watcher) handleDirCreate(path string) {
+	if w.isExcludedDir(path) {
+		return
+	}
+	if err := w.addRecursive(path); err != nil {
+		log.Printf("%s⚠ Failed to watch new directory %s: %v%s\n", colorYellow, path, err, colorReset)
+	}
 }
 
 func (w *Watcher) watch() {
@@ -92,11 +149,18 @@ func (w *Watcher) watch() {
 				return
 			}
 
-			if !strings.HasSuffix(event.Name, ".go") {
+			if event.Op&fsnotify.Chmod == fsnotify.Chmod {
 				continue
 			}
 
-			if event.Op&fsnotify.Chmod == fsnotify.Chmod {
+			if event.Op&fsnotify.Create == fsnotify.Create {
+				if info, err := os.Stat(event.Name); err == nil && info.IsDir() {
+					w.handleDirCreate(event.Name)
+					continue
+				}
+			}
+
+			if !w.shouldWatchFile(event.Name) {
 				continue
 			}
 
@@ -115,12 +179,14 @@ func (w *Watcher) scheduleRebuild(event fsnotify.Event) {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 
+	w.lastEvent = event.Name
+
 	if w.debounceTimer != nil {
 		w.debounceTimer.Stop()
 	}
 
 	w.debounceTimer = time.AfterFunc(w.config.DebounceD, func() {
-		log.Printf("%s⚡ File changed: %s%s\n", colorYellow, filepath.Base(event.Name), colorReset)
+		log.Printf("%s⚡ File changed: %s%s\n", colorYellow, filepath.Base(w.lastEvent), colorReset)
 		if err := w.rebuild(); err != nil {
 			log.Printf("%s✗ Build failed: %v%s\n", colorRed, err, colorReset)
 		}
@@ -131,7 +197,7 @@ func (w *Watcher) rebuild() error {
 	w.mutex.Lock()
 	defer w.mutex.Unlock()
 
-	w.stop()
+	w.stopLocked()
 
 	start := time.Now()
 	log.Printf("%s⚙ Building...%s\n", colorCyan, colorReset)
@@ -150,11 +216,11 @@ func (w *Watcher) rebuild() error {
 	buildTime := time.Since(start)
 	log.Printf("%s✓ Build completed in %dms%s\n", colorGreen, buildTime.Milliseconds(), colorReset)
 
-	return w.run()
+	return w.runLocked()
 }
 
-func (w *Watcher) run() error {
-	ctx, cancel := context.WithCancel(context.Background())
+func (w *Watcher) runLocked() error {
+	ctx, cancel := context.WithCancel(w.rootCtx)
 	w.cancelFunc = cancel
 
 	w.cmd = exec.CommandContext(ctx, w.config.BuildPath, w.config.RunArgs...)
@@ -169,30 +235,43 @@ func (w *Watcher) run() error {
 		return err
 	}
 
-	go func() {
-		if err := w.cmd.Wait(); err != nil {
+	go func(cmd *exec.Cmd) {
+		if err := cmd.Wait(); err != nil {
 			if ctx.Err() == nil {
 				log.Printf("%s✗ Application exited with error: %v%s\n", colorRed, err, colorReset)
 			}
 		}
-	}()
+	}(w.cmd)
 
 	return nil
 }
 
-func (w *Watcher) stop() {
+func (w *Watcher) stopLocked() {
 	if w.cancelFunc != nil {
 		w.cancelFunc()
 		w.cancelFunc = nil
 	}
 
 	if w.cmd != nil && w.cmd.Process != nil {
+		if runtime.GOOS != "windows" {
+			_ = w.cmd.Process.Signal(syscall.SIGTERM)
+		}
 		time.Sleep(50 * time.Millisecond)
+		_ = w.cmd.Process.Kill()
 		w.cmd = nil
 	}
 }
 
+func (w *Watcher) stop() {
+	w.mutex.Lock()
+	defer w.mutex.Unlock()
+	w.stopLocked()
+}
+
 func (w *Watcher) Close() {
 	w.stop()
-	w.watcher.Close()
+	if w.debounceTimer != nil {
+		w.debounceTimer.Stop()
+	}
+	_ = w.watcher.Close()
 }

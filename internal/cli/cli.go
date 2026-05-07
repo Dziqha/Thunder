@@ -3,8 +3,6 @@ package cli
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"strings"
 
 	"github.com/Dziqha/Thunder/internal/commands"
 )
@@ -14,6 +12,8 @@ const (
 	colorBlue   = "\033[34m"
 	colorYellow = "\033[33m"
 )
+
+var version = "dev"
 
 func Execute() error {
 	if len(os.Args) < 2 {
@@ -28,6 +28,16 @@ func Execute() error {
 		return commands.Init()
 	case "run":
 		return commands.Run()
+	case "dev":
+		return commands.Dev()
+	case "doctor":
+		return commands.Doctor()
+	case "inspect":
+		return commands.Inspect()
+	case "events":
+		return commands.Events()
+	case "release-check":
+		return commands.ReleaseCheck()
 	case "version", "-v", "--version":
 		showVersion()
 		return nil
@@ -41,19 +51,8 @@ func Execute() error {
 	}
 }
 
-
-func getGitTag() string {
-	cmd := exec.Command("git", "describe", "--tags", "--abbrev=0")
-	out, err := cmd.Output()
-	if err != nil {
-		return "v1.0.0"
-	}
-	return strings.TrimSpace(string(out))
-}
-
 func showVersion() {
-	version := getGitTag()
-	fmt.Printf("%s⚡ Thunder %s%s\n",colorBlue, version, colorReset)
+	fmt.Printf("%s⚡ Thunder %s%s\n", colorBlue, version, colorReset)
 	fmt.Println("Ultra-fast hot reload for Go")
 }
 
@@ -66,18 +65,30 @@ func showHelp() {
 ╚════════════════════════════════════╝%s
 
 Usage:
-  Thunder <command> [arguments]
+  thunder <command> [arguments]
 
 Commands:
   init        Initialize Thunder in current directory
   run         Run your app with hot reload
+  dev         Run multi-service orchestration from config
+  doctor      Validate config, paths, and runtime readiness
+  inspect     Show resolved project/profile/service config
+  events      Stream runtime events (json/text)
+  release-check Validate release readiness
   version     Show Thunder version
   help        Show this help message
 
 Examples:
-  Thunder init              # Initialize Thunder
-  Thunder run               # Run with hot reload (uses main.go)
-  Thunder run cmd/api       # Run specific package
+  thunder init              # Initialize Thunder
+  thunder run               # Run with hot reload (uses main.go)
+  thunder run ./cmd/api     # Run specific package
+  thunder dev               # Run default profile services
+  thunder dev backend       # Run specific profile
+  thunder doctor            # Run diagnostics
+  thunder inspect backend   # Show resolved profile services
+  thunder events dev --format=json --service=api --type=restart.
+  thunder events dev --format=json --out=events.log --also-stdout
+  thunder release-check
 
 Installation:
   go install github.com/Dziqha/thunder/cmd/thunder@latest

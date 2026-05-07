@@ -1,66 +1,141 @@
-# ⚡ Thunder - Ultra Fast Hot Reload
+# Thunder
 
-Hot reload tool untuk Go yang **lebih cepat** dari Air!
+[![CI](https://github.com/Dziqha/Thunder/actions/workflows/ci.yml/badge.svg)](https://github.com/Dziqha/Thunder/actions/workflows/ci.yml)
+[![Release](https://github.com/Dziqha/Thunder/actions/workflows/release.yml/badge.svg)](https://github.com/Dziqha/Thunder/actions/workflows/release.yml)
+[![Latest Release](https://img.shields.io/github/v/release/Dziqha/Thunder)](https://github.com/Dziqha/Thunder/releases)
 
-## 🚀 Keunggulan Thunder vs Air
+Fast local dev runtime for Go.
 
-| Feature | Thunder ⚡ | Air 🌬️ |
-|---------|-----------|---------|
-| **Debounce Smart** | ✅ 100ms | ❌ 1000ms |
-| **Reload Speed** | ⚡ Ultra Fast | 🐌 Slower |
-| **Memory Usage** | 💚 Lightweight | ⚠️ Higher |
-| **Build Time** | ⏱️ Optimized | ⏱️ Standard |
-| **Setup** | 🎯 Simple | 📝 Complex config |
-| **Colored Output** | 🎨 Beautiful | ⚪ Plain |
+Thunder gives you two modes:
+- **`thunder run`** for hot reload in a single Go app.
+- **`thunder dev`** for multi-service orchestration with dependencies and health checks.
 
-## 📦 Installation
+## Why Thunder?
+
+- quick Go rebuild/restart loop
+- multi-service profiles (`api`, `worker`, `full`, etc.)
+- dependency-aware startup
+- health checks (`http`, `tcp`)
+- restart policy + backoff
+- event stream for observability (`json` / `text`)
+
+## Install
 
 ```bash
- go install github.com/Dziqha/Thunder/cmd/thunder@latest
+go install github.com/Dziqha/Thunder/cmd/thunder@latest
 ```
 
-## 🎯 Usage
+## Quick Start
 
-### Cara 1: Run Project
 ```bash
-# Jalankan thunder untuk file.go
-Thunder run
+thunder init
+thunder run
 ```
 
-### Cara 2: Init Project
+For orchestration:
+
 ```bash
-# Build thunder
-Thunder init
+thunder dev
 ```
 
-## 🎨 Output Features
+## Commands
 
-- ⚡ **Real-time monitoring** dengan colored output
-- ⚙️ **Build status** dengan timing info
-- ✓ **Success indicator** yang jelas
-- ✗ **Error messages** yang informatif
-- 🎯 **File change detection** yang akurat
+```bash
+thunder init
+thunder run [package]
+thunder dev [profile]
+thunder doctor
+thunder inspect [profile]
+thunder events [profile] [--format=json|text] [--service=name] [--type=prefix] [--out=file] [--also-stdout]
+thunder release-check
+```
 
-## 🎯 Tips
+## Example Config
 
-- Edit file .go apapun dan Thunder akan auto-reload
-- Binary di-build ke folder `tmp/` (gitignore recommended)
-- Ctrl+C untuk stop Thunder
-- Error build akan ditampilkan tanpa crash
+```toml
+build_path = "./tmp/main"
+main_file = "main.go"
+watch_dirs = ["."]
+exclude_dirs = ["tmp", "vendor", ".git", "node_modules", ".idea", "bin"]
+watch_exts = [".go", ".mod", ".sum", ".env"]
+watch_files = ["go.mod", "go.sum", "thunder.toml", ".env"]
+debounce = 100
 
+[project]
+name = "myapp"
+default_profile = "dev"
+log_format = "text"
 
-## 🐛 Troubleshooting
+[services.redis]
+type = "process"
+command = ["docker", "compose", "up", "redis"]
 
-**Q: Thunder tidak detect perubahan?**
-A: Pastikan direktori ada di `WatchDirs` dan tidak di `ExcludeDirs`
+[services.api]
+type = "go"
+package = "./cmd/api"
+depends_on = ["redis"]
+env_files = [".env"]
+restart_policy = "always"
+max_restarts = 5
+depends_timeout_ms = 15000
 
-**Q: Build terlalu sering?**
-A: Naikkan `Debounce` ke 200-500ms
+[services.api.healthcheck]
+type = "http"
+url = "http://localhost:8080/health"
+interval_ms = 500
+timeout_ms = 3000
+retries = 20
 
-**Q: Error "permission denied"?**
-A: Pastikan folder `tmp` writeable atau ganti `BuildPath`
+[profiles.dev]
+services = ["redis", "api"]
+```
 
-## ⚡ Enjoy Lightning-Fast Development!
+## Events
 
-Thunder dibuat untuk developer yang menghargai **kecepatan** dan **simplicity**.
-No complex config, just pure performance! 🚀
+```bash
+# stream all events as json
+thunder events dev --format=json
+
+# only api restart events
+thunder events dev --format=json --service=api --type=restart.
+
+# save events to file
+thunder events dev --format=json --out=events.log --also-stdout
+
+# rotate log at 10MB, keep 5 files
+thunder events dev --format=json --out=events.log --max-size-mb=10 --max-files=5
+```
+
+## Benchmark Script
+
+```bash
+pwsh ./scripts/bench.ps1 -Iterations 20 -Target ./cmd/thunder -OutJson bench.json -OutMd bench.md
+```
+
+## Project Status
+
+Thunder is production-ready for Go hot reload and profile-based local orchestration.
+
+The project is actively maintained, and backward compatibility is preserved whenever possible.
+
+If you find bugs or rough edges, please open an issue.
+
+## Docs
+
+- `docs/architecture.md`
+- `docs/config-reference.md`
+
+## Contributing
+
+PRs are welcome.
+
+Please read `CONTRIBUTING.md` before opening a pull request.
+
+Recommended local checks:
+
+```bash
+go test ./...
+go test -race ./...
+go build ./...
+thunder release-check
+```
