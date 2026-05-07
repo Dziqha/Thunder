@@ -9,8 +9,28 @@
 Fast local dev runtime for Go.
 
 Thunder gives you two modes:
-- **`thunder run`** for hot reload in a single Go app.
-- **`thunder dev`** for multi-service orchestration with dependencies and health checks.
+- **`thunder run`** for hot reload in a single Go app
+- **`thunder dev`** for multi-service orchestration with dependencies and health checks
+
+## Overview
+
+- hot reload for Go services
+- orchestration profiles for local stacks
+- dependency health gating
+- restart policies with backoff
+- event stream for observability
+- diagnostics and release checks
+
+## Contents
+
+- [Install](#install)
+- [Quick Start](#quick-start)
+- [Commands](#commands)
+- [Example Config](#example-config)
+- [Events](#events)
+- [Benchmark Script](#benchmark-script)
+- [Docs](#docs)
+- [Contributing](#contributing)
 
 ## Why Thunder?
 
@@ -27,6 +47,9 @@ Thunder gives you two modes:
 go install github.com/Dziqha/Thunder/cmd/thunder@latest
 ```
 
+Requirements:
+- Go 1.24+
+
 ## Quick Start
 
 ```bash
@@ -39,6 +62,12 @@ For orchestration:
 ```bash
 thunder dev
 ```
+
+Sanity check:
+
+```bash
+thunder doctor
+``` 
 
 ## Commands
 
@@ -113,6 +142,10 @@ thunder events dev --format=json --out=events.log --max-size-mb=10 --max-files=5
 ```bash
 pwsh ./scripts/bench.ps1 -Iterations 20 -Target ./cmd/thunder -OutJson bench.json -OutMd bench.md
 ```
+
+Current baseline reports in this repo:
+- `docs/bench-baseline.md`
+- `docs/bench-baseline.json`
 
 ## Project Status
 
