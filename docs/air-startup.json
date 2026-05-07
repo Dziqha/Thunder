@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-05-07T11:52:13.8964881+07:00",
+  "tool": "air",
+  "fixture": "benchmarks/fixture-small-api",
+  "iterations": 3,
+  "average_ms": 6366.0,
+  "min_ms": 5754.61,
+  "max_ms": 6994.1,
+  "samples_ms": [
+    6994.1,
+    6349.28,
+    5754.61
+  ]
+}
