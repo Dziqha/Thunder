@@ -1,0 +1,25 @@
+<svg width="1280" height="520" viewBox="0 0 1280 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="520" rx="24" fill="#0D1117"/>
+  <rect x="36" y="36" width="1208" height="448" rx="18" fill="#161B22" stroke="#30363D"/>
+
+  <circle cx="78" cy="78" r="8" fill="#FF5F56"/>
+  <circle cx="108" cy="78" r="8" fill="#FFBD2E"/>
+  <circle cx="138" cy="78" r="8" fill="#27C93F"/>
+  <text x="170" y="85" fill="#8B949E" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">orchestration session</text>
+
+  <text x="76" y="148" fill="#58A6FF" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22">$ thunder dev backend</text>
+  <text x="76" y="194" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[redis] health.ok service is healthy</text>
+  <text x="76" y="228" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[api] dependency.ready dependencies healthy</text>
+  <text x="76" y="262" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[api] service.started service started</text>
+  <text x="76" y="296" fill="#D2A8FF" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[api] restart.wait attempt=1 delay=500ms</text>
+  <text x="76" y="330" fill="#D2A8FF" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[api] restart.ok attempt=1</text>
+
+  <text x="76" y="414" fill="#F0F6FC" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="64" font-weight="800">Thunder</text>
+  <text x="76" y="454" fill="#8B949E" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="24" font-weight="500">Go hot reload and local dev orchestration</text>
+
+  <rect x="910" y="136" width="268" height="220" rx="16" fill="#0D1117" stroke="#30363D"/>
+  <text x="944" y="176" fill="#F0F6FC" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">services</text>
+  <text x="944" y="220" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19">redis    healthy</text>
+  <text x="944" y="254" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19">api      healthy</text>
+  <text x="944" y="288" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="19">worker   healthy</text>
+</svg>

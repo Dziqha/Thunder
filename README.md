@@ -1,3 +1,5 @@
+![Thunder Banner](docs/assets/thunder-banner-minimal.svg)
+
 # Thunder
 
 [![CI](https://github.com/Dziqha/Thunder/actions/workflows/ci.yml/badge.svg)](https://github.com/Dziqha/Thunder/actions/workflows/ci.yml)

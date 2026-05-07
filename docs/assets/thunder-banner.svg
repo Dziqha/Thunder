@@ -1,0 +1,30 @@
+<svg width="1280" height="480" viewBox="0 0 1280 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="480" rx="24" fill="#0D1117"/>
+  <rect x="40" y="40" width="1200" height="400" rx="18" fill="#161B22" stroke="#30363D"/>
+
+  <circle cx="78" cy="78" r="8" fill="#FF5F56"/>
+  <circle cx="108" cy="78" r="8" fill="#FFBD2E"/>
+  <circle cx="138" cy="78" r="8" fill="#27C93F"/>
+
+  <text x="168" y="86" fill="#8B949E" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="18">thunder</text>
+
+  <text x="86" y="150" fill="#58A6FF" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="22">$ thunder dev</text>
+  <text x="86" y="190" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[redis] health.ok service is healthy</text>
+  <text x="86" y="224" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[api] dependency.ready dependencies healthy</text>
+  <text x="86" y="258" fill="#7EE787" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[api] service.started service started</text>
+  <text x="86" y="292" fill="#D2A8FF" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">[api] restart.ok attempt=1</text>
+
+  <text x="86" y="360" fill="#F0F6FC" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="64" font-weight="800">Thunder</text>
+  <text x="86" y="402" fill="#8B949E" font-family="Segoe UI, Inter, Arial, sans-serif" font-size="26" font-weight="500">Fast local dev runtime for Go</text>
+
+  <rect x="905" y="118" width="248" height="188" rx="16" fill="#0D1117" stroke="#30363D"/>
+  <text x="936" y="162" fill="#F0F6FC" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">run</text>
+  <text x="936" y="202" fill="#F0F6FC" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">dev</text>
+  <text x="936" y="242" fill="#F0F6FC" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">doctor</text>
+  <text x="936" y="282" fill="#F0F6FC" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="20">events</text>
+
+  <rect x="1042" y="145" width="80" height="10" rx="5" fill="#58A6FF"/>
+  <rect x="1042" y="185" width="118" height="10" rx="5" fill="#7EE787"/>
+  <rect x="1042" y="225" width="92" height="10" rx="5" fill="#FF7B72"/>
+  <rect x="1042" y="265" width="128" height="10" rx="5" fill="#D2A8FF"/>
+</svg>
