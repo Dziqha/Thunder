@@ -151,6 +151,7 @@ Current baseline reports in this repo:
 Benchmark methodology and comparison planning:
 - `docs/benchmark-plan.md`
 - `docs/benchmark-fixture-small-api.md`
+- `docs/benchmark-report-template.md`
 
 ## Project Status
 
@@ -166,6 +167,7 @@ If you find bugs or rough edges, please open an issue.
 - `docs/config-reference.md`
 - `docs/benchmark-plan.md`
 - `docs/benchmark-fixture-small-api.md`
+- `docs/benchmark-report-template.md`
 
 ## Contributing
 
