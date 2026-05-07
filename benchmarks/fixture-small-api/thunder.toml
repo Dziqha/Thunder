@@ -1,4 +1,4 @@
-build_path = "./tmp/api"
+build_path = "./tmp/api.exe"
 main_file = "./cmd/api"
 watch_dirs = ["cmd", "internal"]
 exclude_dirs = ["tmp", ".git"]
@@ -21,7 +21,7 @@ depends_timeout_ms = 5000
 
 [services.api.healthcheck]
 type = "http"
-url = "http://localhost:8080/health"
+url = "http://localhost:18080/health"
 interval_ms = 200
 timeout_ms = 2000
 retries = 15

@@ -14,7 +14,7 @@ import (
 
 func main() {
 	server := &http.Server{
-		Addr:              ":8080",
+		Addr:              ":18080",
 		Handler:           app.NewRouter(),
 		ReadHeaderTimeout: 3 * time.Second,
 	}

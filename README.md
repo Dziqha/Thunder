@@ -141,6 +141,7 @@ thunder events dev --format=json --out=events.log --max-size-mb=10 --max-files=5
 
 ```bash
 pwsh ./scripts/bench.ps1 -Iterations 20 -Target ./cmd/thunder -OutJson bench.json -OutMd bench.md
+pwsh ./scripts/bench-compare.ps1 -Tool thunder -Fixture benchmarks/fixture-small-api -Iterations 5
 ```
 
 Current baseline reports in this repo:
