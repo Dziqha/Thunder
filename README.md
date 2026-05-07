@@ -147,6 +147,10 @@ Current baseline reports in this repo:
 - `docs/bench-baseline.md`
 - `docs/bench-baseline.json`
 
+Benchmark methodology and comparison planning:
+- `docs/benchmark-plan.md`
+- `docs/benchmark-fixture-small-api.md`
+
 ## Project Status
 
 Thunder is production-ready for Go hot reload and profile-based local orchestration.
@@ -159,6 +163,8 @@ If you find bugs or rough edges, please open an issue.
 
 - `docs/architecture.md`
 - `docs/config-reference.md`
+- `docs/benchmark-plan.md`
+- `docs/benchmark-fixture-small-api.md`
 
 ## Contributing
 

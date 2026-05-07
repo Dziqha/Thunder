@@ -1,0 +1,30 @@
+build_path = "./tmp/api"
+main_file = "./cmd/api"
+watch_dirs = ["cmd", "internal"]
+exclude_dirs = ["tmp", ".git"]
+watch_exts = [".go", ".mod", ".sum"]
+watch_files = ["go.mod", "go.sum"]
+debounce = 100
+
+[project]
+name = "fixture-small-api"
+default_profile = "dev"
+log_format = "text"
+
+[services.api]
+type = "go"
+package = "./cmd/api"
+env = { SERVICE_NAME = "fixture-small-api", APP_ENV = "dev" }
+restart_policy = "always"
+max_restarts = 3
+depends_timeout_ms = 5000
+
+[services.api.healthcheck]
+type = "http"
+url = "http://localhost:8080/health"
+interval_ms = 200
+timeout_ms = 2000
+retries = 15
+
+[profiles.dev]
+services = ["api"]
