@@ -154,6 +154,25 @@ Benchmark methodology and comparison planning:
 - `docs/benchmark-report-thunder-vs-air-small-api.md`
 - `docs/benchmark-report-thunder-vs-air-medium-service.md`
 
+## Performance
+
+Current startup-to-health benchmark results in this repo:
+
+- Small API fixture:
+  - Thunder: `5182.69 ms`
+  - Air: `6148.82 ms`
+  - Thunder advantage: about `15.7%`
+- Medium service fixture:
+  - Thunder: `6375.64 ms`
+  - Air: `7450.04 ms`
+  - Thunder advantage: about `14.4%`
+
+These numbers come from the benchmark fixtures and reports committed in `docs/`.
+
+Scope note:
+- this is a startup-to-health comparison in the current Windows benchmark environment
+- it is a strong project baseline, not a claim that Thunder is always faster in every workload
+
 ## Project Status
 
 Thunder is production-ready for Go hot reload and profile-based local orchestration.
