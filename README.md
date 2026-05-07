@@ -152,6 +152,7 @@ Benchmark methodology and comparison planning:
 - `docs/benchmark-plan.md`
 - `docs/benchmark-fixture-small-api.md`
 - `docs/benchmark-report-thunder-vs-air-small-api.md`
+- `docs/benchmark-report-thunder-vs-air-medium-service.md`
 
 ## Project Status
 
@@ -168,6 +169,7 @@ If you find bugs or rough edges, please open an issue.
 - `docs/benchmark-plan.md`
 - `docs/benchmark-fixture-small-api.md`
 - `docs/benchmark-report-thunder-vs-air-small-api.md`
+- `docs/benchmark-report-thunder-vs-air-medium-service.md`
 
 ## Contributing
 

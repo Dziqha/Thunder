@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-05-07T12:52:09.7954976+07:00",
+  "tool": "thunder",
+  "fixture": "benchmarks/fixture-medium-service",
+  "iterations": 5,
+  "average_ms": 6375.64,
+  "min_ms": 4751.53,
+  "max_ms": 7603.31,
+  "samples_ms": [
+    7603.31,
+    6346.67,
+    4751.53,
+    5791.66,
+    7385.03
+  ]
+}

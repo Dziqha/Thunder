@@ -4,8 +4,8 @@
 
 Short conclusion:
 
-- Thunder average startup-to-health latency: `6037.69 ms`
-- Air average startup-to-health latency: `6366.00 ms`
+- Thunder average startup-to-health latency: `5182.69 ms`
+- Air average startup-to-health latency: `6148.82 ms`
 - Main takeaway: Thunder showed lower average startup latency than Air on this small API fixture in this environment.
 
 ## Environment
@@ -22,20 +22,20 @@ Short conclusion:
 - Fixture: `benchmarks/fixture-small-api`
 - Health endpoint: `http://127.0.0.1:18080/health`
 - Scenario: startup-to-health latency
-- Iterations: `3`
+- Iterations: `5`
 
 ## Commands
 
 Thunder:
 
 ```bash
-pwsh ./scripts/bench-compare.ps1 -Tool thunder -Fixture benchmarks/fixture-small-api -Iterations 3 -OutJson docs/thunder-startup.json -OutMd docs/thunder-startup.md
+pwsh ./scripts/bench-compare.ps1 -Tool thunder -Fixture benchmarks/fixture-small-api -Iterations 5 -OutJson docs/thunder-startup.json -OutMd docs/thunder-startup.md
 ```
 
 Air:
 
 ```bash
-pwsh ./scripts/bench-compare.ps1 -Tool air -Fixture benchmarks/fixture-small-api -Iterations 3 -OutJson docs/air-startup.json -OutMd docs/air-startup.md
+pwsh ./scripts/bench-compare.ps1 -Tool air -Fixture benchmarks/fixture-small-api -Iterations 5 -OutJson docs/air-startup.json -OutMd docs/air-startup.md
 ```
 
 ## Results
@@ -44,8 +44,8 @@ pwsh ./scripts/bench-compare.ps1 -Tool air -Fixture benchmarks/fixture-small-api
 
 | Tool | Avg ms | Min ms | Max ms | Iterations |
 |------|--------|--------|--------|------------|
-| Thunder | 6037.69 | 5780.04 | 6365.95 | 3 |
-| Air | 6366.00 | 5754.61 | 6994.10 | 3 |
+| Thunder | 5182.69 | 4742.53 | 5771.96 | 5 |
+| Air | 6148.82 | 5272.67 | 6873.71 | 5 |
 
 ## Raw Reports
 
@@ -58,7 +58,7 @@ pwsh ./scripts/bench-compare.ps1 -Tool air -Fixture benchmarks/fixture-small-api
 
 - This run focuses only on startup-to-health latency.
 - This is a small single-service fixture, not a full orchestration comparison.
-- Iteration count is still low (`3`), so treat this as an initial baseline rather than a final public performance claim.
+- Iteration count is still modest (`5`), so treat this as a baseline rather than a universal performance claim.
 - No outliers were removed from the recorded samples.
 
 ## Claim Wording

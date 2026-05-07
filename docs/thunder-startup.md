@@ -1,13 +1,13 @@
 # Benchmark Compare Report
 
-- Timestamp: 2026-05-07T11:50:36.1761032+07:00
+- Timestamp: 2026-05-07T12:31:11.7829767+07:00
 - Tool: thunder
 - Fixture: benchmarks/fixture-small-api
-- Iterations: 3
-- Average (ms): 6037.69
-- Min (ms): 5780.04
-- Max (ms): 6365.95
+- Iterations: 5
+- Average (ms): 5182.69
+- Min (ms): 4742.53
+- Max (ms): 5771.96
 
 ## Samples (ms)
 
-5967,08, 5780,04, 6365,95
+5390,49, 4750,7, 4742,53, 5257,78, 5771,96

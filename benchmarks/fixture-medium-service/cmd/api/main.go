@@ -9,18 +9,18 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Dziqha/Thunder/benchmarks/fixture-small-api/internal/app"
+	"github.com/Dziqha/Thunder/benchmarks/fixture-medium-service/internal/httpapi"
 )
 
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "18080"
+		port = "18180"
 	}
 
 	server := &http.Server{
 		Addr:              ":" + port,
-		Handler:           app.NewRouter(),
+		Handler:           httpapi.NewRouter(),
 		ReadHeaderTimeout: 3 * time.Second,
 	}
 

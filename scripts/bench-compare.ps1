@@ -40,10 +40,34 @@ function Stop-ProcessTree {
   Stop-Process -Id $ParentId -Force -ErrorAction SilentlyContinue
 }
 
-function New-CommandSpec {
+function Stop-PortListeners {
+  param([int[]]$Ports)
+
+  foreach ($port in $Ports) {
+    $listeners = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
+    foreach ($listener in $listeners) {
+      Stop-Process -Id $listener.OwningProcess -Force -ErrorAction SilentlyContinue
+    }
+  }
+}
+
+function Get-HealthBaseUri {
+  param([string]$Url)
+
+  $uri = [System.Uri]$Url
+  return @{
+    Scheme = $uri.Scheme
+    Host = $uri.Host
+    Port = $uri.Port
+    Path = $uri.AbsolutePath
+  }
+}
+
+function New-CommandText {
   param(
     [string]$Tool,
-    [string]$RepoRoot
+    [string]$RepoRoot,
+    [int]$Port
   )
 
   switch ($Tool) {
@@ -57,16 +81,10 @@ function New-CommandSpec {
       } finally {
         Pop-Location
       }
-      return @{
-        FilePath = $localBin
-        Arguments = @("run", "./cmd/api")
-      }
+      return ('$env:PORT="{0}"; & "{1}" run ./cmd/api' -f $Port, $localBin)
     }
     "air" {
-      return @{
-        FilePath = "air"
-        Arguments = @("-c", ".air.toml")
-      }
+      return ('$env:PORT="{0}"; air -c .air.toml' -f $Port)
     }
     default { throw "Unsupported tool: $Tool" }
   }
@@ -78,8 +96,8 @@ if (-not (Test-Path -LiteralPath $fixturePath)) {
   throw "Fixture path not found: $fixturePath"
 }
 
-$commandSpec = New-CommandSpec -Tool $Tool -RepoRoot $repoRoot
 $samples = @()
+$healthBase = Get-HealthBaseUri -Url $HealthUrl
 
 Write-Host "Benchmark compare runner"
 Write-Host "Tool: $Tool"
@@ -91,6 +109,13 @@ for ($i = 1; $i -le $Iterations; $i++) {
 
   Push-Location $fixturePath
   try {
+    $port = $healthBase.Port + $i
+    $healthUrlForRun = "{0}://{1}:{2}{3}" -f $healthBase.Scheme, $healthBase.Host, $port, $healthBase.Path
+    $commandText = New-CommandText -Tool $Tool -RepoRoot $repoRoot -Port $port
+
+    Stop-PortListeners -Ports @($port)
+    Start-Sleep -Milliseconds 200
+
     if (Test-Path -LiteralPath "tmp") {
       Remove-Item -LiteralPath "tmp" -Recurse -Force -ErrorAction SilentlyContinue
     }
@@ -99,13 +124,14 @@ for ($i = 1; $i -le $Iterations; $i++) {
     $stderrLog = Join-Path $fixturePath ("tmp/bench-{0}-stderr.log" -f $Tool)
     New-Item -ItemType Directory -Path (Join-Path $fixturePath "tmp") -Force | Out-Null
 
-    $proc = Start-Process -FilePath $commandSpec.FilePath -ArgumentList $commandSpec.Arguments -WorkingDirectory $fixturePath -PassThru -WindowStyle Hidden -RedirectStandardOutput $stdoutLog -RedirectStandardError $stderrLog
+    $proc = Start-Process -FilePath "pwsh" -ArgumentList @("-NoProfile", "-Command", $commandText) -WorkingDirectory $fixturePath -PassThru -WindowStyle Hidden -RedirectStandardOutput $stdoutLog -RedirectStandardError $stderrLog
     try {
-      $elapsed = Wait-Health -Url $HealthUrl -TimeoutSeconds $TimeoutSeconds
+      $elapsed = Wait-Health -Url $healthUrlForRun -TimeoutSeconds $TimeoutSeconds
       $samples += [math]::Round($elapsed, 2)
       Write-Host "  startup_ms=$([math]::Round($elapsed, 2))"
     } finally {
       Stop-ProcessTree -ParentId $proc.Id
+      Stop-PortListeners -Ports @($port)
       Start-Sleep -Milliseconds 300
     }
   } finally {
