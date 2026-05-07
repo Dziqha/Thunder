@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 
 	"github.com/Dziqha/Thunder/internal/commands"
 )
@@ -52,8 +53,31 @@ func Execute() error {
 }
 
 func showVersion() {
-	fmt.Printf("%s⚡ Thunder %s%s\n", colorBlue, version, colorReset)
+	fmt.Printf("%s⚡ Thunder %s%s\n", colorBlue, resolveVersion(), colorReset)
 	fmt.Println("Ultra-fast hot reload for Go")
+}
+
+func resolveVersion() string {
+	if version != "" && version != "dev" {
+		return version
+	}
+
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "dev"
+	}
+
+	if info.Main.Version != "" && info.Main.Version != "(devel)" {
+		return info.Main.Version
+	}
+
+	for _, dep := range info.Deps {
+		if dep.Path == "github.com/Dziqha/Thunder" && dep.Version != "" && dep.Version != "(devel)" {
+			return dep.Version
+		}
+	}
+
+	return "dev"
 }
 
 func showHelp() {
